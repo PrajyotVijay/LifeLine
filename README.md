@@ -85,38 +85,38 @@ A full-stack MERN application that connects blood and organ donors with recipien
 ---
 
 ## 📁 Project Structure
-
-
+```
 LifeLine/
-├── backend/
-│   ├── config/
-│   │   └── db.js               # MongoDB connection
-│   ├── middleware/
-│   │   └── auth.js             # JWT authentication middleware
-│   ├── models/
-│   │   ├── Donor.js            # Donor schema
-│   │   ├── Contact.js          # Contact form schema
-│   │   └── EmergencyRequest.js # Emergency request schema
-│   ├── routes/
-│   │   ├── donors.js           # Donor CRUD + filters + export
-│   │   ├── admin.js            # Admin login
-│   │   ├── contacts.js         # Contact form
-│   │   └── emergency.js        # Emergency requests
-│   ├── .env                    # Environment variables
-│   └── server.js               # Express server entry point
-└── frontend/
-├── css/
-│   └── style.css           # Global styles
-├── js/
-│   └── shared.js           # Shared navbar, footer, helpers
-├── pages/
-│   ├── about.html          # About page
-│   ├── find-donor.html     # Find donor with map + filters
-│   ├── register.html       # Donor registration form
-│   ├── contact.html        # Contact form
-│   ├── admin.html          # Admin dashboard
-│   └── emergency.html      # Emergency requests page
-└── index.html              # Home page
+|-- backend/
+|   |-- config/
+|   |   └── db.js               # MongoDB connection
+|   |-- middleware/
+|   |   └── auth.js             # JWT auth middleware
+|   |-- models/
+|   |   |-- Donor.js            # Donor schema
+|   |   |-- Contact.js          # Contact form schema
+|   |   └── EmergencyRequest.js # Emergency request schema
+|   |-- routes/
+|   |   |-- donors.js           # Donor CRUD + filters + export
+|   |   |-- admin.js            # Admin login
+|   |   |-- contacts.js         # Contact form
+|   |   └── emergency.js        # Emergency requests
+|   |-- .env                    # Environment variables
+|   └── server.js               # Express server
+|-- frontend/
+|   |-- css/
+|   |   └── style.css           # Global styles
+|   |-- js/
+|   |   └── shared.js           # Shared components
+|   |-- pages/
+|   |   |-- about.html          # About page
+|   |   |-- find-donor.html     # Find donor + map
+|   |   |-- register.html       # Donor registration
+|   |   |-- contact.html        # Contact form
+|   |   |-- admin.html          # Admin dashboard
+|   |   └── emergency.html      # Emergency requests
+|   └── index.html              # Home page
+```
 
 
 ---

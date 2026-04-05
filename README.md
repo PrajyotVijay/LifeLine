@@ -2,7 +2,10 @@
 
 A full-stack MERN application that connects blood and organ donors with recipients. Built with MongoDB, Express.js, vanilla JavaScript, and Node.js.
 
-🌐 **Live Demo:** [Coming Soon]
+🌐 **🎥Live Demo:** 
+
+
+![LifeLine Demo](screenshots/demo.gif)
 
 ---
 

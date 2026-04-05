@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin - LifeLine</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-white text-gray-700 flex flex-col min-h-screen">
+
+  <div id="navbar"></div>
+
+  <div class="max-w-6xl mx-auto px-4 py-16 flex-1" id="mainContent">
+
+    <!-- LOGIN FORM -->
+    <div id="loginSection">
+      <div class="max-w-md mx-auto">
+        <div class="text-center mb-8">
+          <div class="inline-flex items-center justify-center w-16 h-16 bg-red-100 rounded-full mb-4">
+            <i data-lucide="shield" class="w-8 h-8 text-red-600"></i>
+          </div>
+          <h1 class="text-3xl font-bold text-gray-900 mb-2">Admin Login</h1>
+          <p class="text-gray-600 text-sm">Enter your credentials to access the admin dashboard</p>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-lg border border-gray-100 p-8">
+          <div id="loginAlert"></div>
+
+          <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700 mb-1">Username</label>
+            <input type="text" id="username" placeholder="admin"
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-red-500" />
+          </div>
+
+          <div class="mb-6">
+            <label class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+            <input type="password" id="password" placeholder="••••••••"
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-red-500"
+              onkeydown="if(event.key==='Enter') login()" />
+          </div>
+
+          <button onclick="login()"
+            class="w-full flex items-center justify-center gap-2 py-2.5 bg-red-600 text-white rounded-lg font-semibold hover:bg-red-700 transition-all text-sm">
+            <i data-lucide="log-in" class="w-4 h-4"></i> Login
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- DASHBOARD -->
+<div id="dashboardSection" class="hidden">
+
+  <!-- Admin Header -->
+  <div class="bg-white rounded-xl border border-gray-200 shadow p-6 mb-6">
+    <div class="flex items-center justify-between">
+      <div class="flex items-center gap-4">
+        <div class="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center">
+          <i data-lucide="shield" class="w-6 h-6 text-red-600"></i>
+        </div>
+        <div>
+          <h1 class="text-2xl font-bold text-gray-900">Admin Dashboard</h1>
+          <p class="text-sm text-gray-500">Manage donors and contact messages</p>
+        </div>
+      </div>
+      <button onclick="logout()"
+        class="flex items-center gap-2 px-4 py-2.5 border border-gray-300 rounded-lg text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-all">
+        <i data-lucide="log-out" class="w-4 h-4"></i> Logout
+      </button>
+    </div>
+    <div class="mt-4 pt-4 border-t border-gray-100 flex items-center justify-between gap-8">
+      <p class="text-sm text-gray-500 flex-shrink-0">Download all approved donors data</p>
+      <button onclick="exportCSV()"
+        class="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg text-sm font-semibold hover:bg-green-700 transition-all">
+        <i data-lucide="download" class="w-4 h-4"></i> Export Donors as CSV
+      </button>
+    </div>
+  </div>
+
+      <!-- Stats -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+        <div class="bg-white rounded-xl border border-gray-200 shadow p-6 flex items-center gap-4">
+          <div class="w-12 h-12 bg-yellow-100 rounded-xl flex items-center justify-center flex-shrink-0">
+            <i data-lucide="clock" class="w-6 h-6 text-yellow-600"></i>
+          </div>
+          <div>
+            <h3 id="pendingCount" class="text-3xl font-bold text-yellow-600">0</h3>
+            <p class="text-sm text-gray-500">Pending Applications</p>
+          </div>
+        </div>
+        <div class="bg-white rounded-xl border border-gray-200 shadow p-6 flex items-center gap-4">
+          <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center flex-shrink-0">
+            <i data-lucide="check-circle" class="w-6 h-6 text-green-600"></i>
+          </div>
+          <div>
+            <h3 id="approvedCount" class="text-3xl font-bold text-green-600">0</h3>
+            <p class="text-sm text-gray-500">Approved Donors</p>
+          </div>
+        </div>
+        <div class="bg-white rounded-xl border border-gray-200 shadow p-6 flex items-center gap-4">
+          <div class="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center flex-shrink-0">
+            <i data-lucide="x-circle" class="w-6 h-6 text-red-600"></i>
+          </div>
+          <div>
+            <h3 id="rejectedCount" class="text-3xl font-bold text-red-600">0</h3>
+            <p class="text-sm text-gray-500">Rejected Applications</p>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- Analytics Charts -->
+      <div class="bg-white rounded-xl border border-gray-200 shadow p-6 mb-6">
+        <div class="flex items-center gap-3 mb-6">
+          <div class="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center">
+            <i data-lucide="bar-chart-2" class="w-5 h-5 text-red-600"></i>
+          </div>
+          <div>
+            <h2 class="text-lg font-bold text-gray-900">Donor Analytics</h2>
+            <p class="text-sm text-gray-500">Visual insights on donor data</p>
+          </div>
+        </div>
+
+        <!-- Row 1: Blood Group + Status -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          <div class="bg-gray-50 rounded-xl p-4">
+            <canvas id="bloodGroupChart"></canvas>
+          </div>
+          <div class="bg-gray-50 rounded-xl p-4 flex items-center justify-center">
+            <canvas id="statusChart"></canvas>
+          </div>
+        </div>
+
+        <!-- Row 2: Donors by State -->
+        <div class="bg-gray-50 rounded-xl p-4">
+          <canvas id="stateChart"></canvas>
+        </div>
+      </div>
+
+      <!-- Pending Donors Table -->
+      <div class="bg-white rounded-xl border border-gray-200 shadow overflow-hidden mb-6">
+        <div class="px-6 py-4 border-b border-gray-200">
+          <h2 class="text-lg font-bold text-gray-900">Pending Donor Applications</h2>
+        </div>
+        <div id="pendingDonors"></div>
+      </div>
+
+      <!-- Approved Donors Table -->
+      <div class="bg-white rounded-xl border border-gray-200 shadow overflow-hidden mb-8">
+        <div class="px-6 py-4 border-b border-gray-200">
+          <div class="flex items-center justify-between flex-wrap gap-4">
+            <h2 class="text-lg font-bold text-gray-900">Approved Donors</h2>
+            <div class="flex items-center gap-3 flex-wrap">
+              <!-- Search -->
+              <input type="text" id="donorSearch" placeholder="Search by name, email, city..."
+                oninput="filterApprovedDonors()"
+                class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-red-500 w-64" />
+              <!-- Blood Group Filter -->
+              <select id="donorBloodFilter" onchange="filterApprovedDonors()"
+                class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-red-500">
+                <option value="">All Blood Groups</option>
+                <option>A+</option><option>A-</option>
+                <option>B+</option><option>B-</option>
+                <option>AB+</option><option>AB-</option>
+                <option>O+</option><option>O-</option>
+              </select>
+              <!-- Rows per page -->
+              <select id="rowsPerPage" onchange="filterApprovedDonors()"
+                class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-red-500">
+                <option value="10">10 per page</option>
+                <option value="25">25 per page</option>
+                <option value="50">50 per page</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div id="approvedDonors"></div>
+        <div id="approvedPagination" class="px-6 py-4 border-t border-gray-100"></div>
+      </div>
+
+      <!-- Contact Messages -->
+      <div class="bg-white rounded-xl border border-gray-200 shadow overflow-hidden mt-8">
+        <div class="px-6 py-4 border-b border-gray-200">
+          <h2 class="text-lg font-bold text-gray-900">Contact Messages</h2>
+        </div>
+        <div id="contactMessages"></div>
+      </div>
+
+      <!-- Emergency Requests Management -->
+      <div class="bg-white rounded-xl border border-gray-200 shadow overflow-hidden mt-8">
+        <div class="px-6 py-4 border-b border-gray-200">
+          <h2 class="text-lg font-bold text-gray-900">🚨 Emergency Requests</h2>
+        </div>
+        <div id="adminEmergency"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <div id="footer"></div>
+
+  <script src="../js/shared.js"></script>
+  <script>
+    document.getElementById('navbar').innerHTML = renderNavbar('admin');
+    document.getElementById('footer').innerHTML = renderFooter();
+    lucide.createIcons();
+
+    let token = sessionStorage.getItem('adminToken');
+    if (token) showDashboard();
+
+    function getBloodGroupColor(bloodGroup) {
+      const colors = {
+        'A+':  'bg-red-100 text-red-600',
+        'A-':  'bg-red-200 text-red-700',
+        'B+':  'bg-blue-100 text-blue-600',
+        'B-':  'bg-blue-200 text-blue-700',
+        'AB+': 'bg-purple-100 text-purple-600',
+        'AB-': 'bg-purple-200 text-purple-700',
+        'O+':  'bg-green-100 text-green-600',
+        'O-':  'bg-green-200 text-green-700',
+      };
+      return colors[bloodGroup] || 'bg-gray-100 text-gray-600';
+    }
+
+    async function login() {
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value.trim();
+
+      if (!username || !password) {
+        showAlert('loginAlert', 'Please enter username and password.', 'error');
+        return;
+      }
+
+      try {
+        const res = await fetch(`${API_BASE}/admin/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password })
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+          token = data.token;
+          sessionStorage.setItem('adminToken', token);
+          showDashboard();
+        } else {
+          showAlert('loginAlert', data.error || 'Invalid credentials.', 'error');
+        }
+      } catch (err) {
+        showAlert('loginAlert', 'Network error. Make sure backend is running.', 'error');
+      }
+    }
+
+    function logout() {
+      sessionStorage.removeItem('adminToken');
+      token = null;
+      document.getElementById('loginSection').classList.remove('hidden');
+      document.getElementById('dashboardSection').classList.add('hidden');
+    }
+
+  function showDashboard() {
+    document.getElementById('loginSection').classList.add('hidden');
+    document.getElementById('dashboardSection').classList.remove('hidden');
+    fetchStats();
+    fetchPendingDonors();
+    fetchApprovedDonors();
+    fetchContactMessages();
+    fetchEmergencyAdmin();
+    renderCharts();
+  }
+
+    async function fetchStats() {
+      try {
+        const res = await fetch(`${API_BASE}/donors/stats`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const data = await res.json();
+        document.getElementById('pendingCount').textContent = data.pending;
+        document.getElementById('approvedCount').textContent = data.approved;
+        document.getElementById('rejectedCount').textContent = data.rejected;
+      } catch (err) {
+        console.error('Stats error:', err);
+      }
+    }
+
+  
+let bloodGroupChartInstance = null;
+let statusChartInstance = null;
+let stateChartInstance = null;
+
+async function renderCharts() {
+  try {
+    // Fetch all approved donors
+    const res = await fetch(`${API_BASE}/donors`);
+    const donors = await res.json();
+
+    // Fetch stats for status chart
+    const statsRes = await fetch(`${API_BASE}/donors/stats`, {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+    const stats = await statsRes.json();
+
+    // Destroy existing charts
+    if (bloodGroupChartInstance) bloodGroupChartInstance.destroy();
+    if (statusChartInstance) statusChartInstance.destroy();
+    if (stateChartInstance) stateChartInstance.destroy();
+
+    // ---- CHART 1: Donors by Blood Group ----
+    const bloodGroups = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
+    const bloodCounts = bloodGroups.map(bg =>
+      donors.filter(d => d.bloodGroup === bg).length
+    );
+
+    const bgCtx = document.getElementById('bloodGroupChart').getContext('2d');
+    bloodGroupChartInstance = new Chart(bgCtx, {
+      type: 'bar',
+      data: {
+        labels: bloodGroups,
+        datasets: [{
+          label: 'Number of Donors',
+          data: bloodCounts,
+          backgroundColor: [
+            '#fee2e2', '#fecaca', '#dbeafe', '#bfdbfe',
+            '#f3e8ff', '#e9d5ff', '#dcfce7', '#bbf7d0'
+          ],
+          borderColor: [
+            '#dc2626', '#b91c1c', '#2563eb', '#1d4ed8',
+            '#9333ea', '#7e22ce', '#16a34a', '#15803d'
+          ],
+          borderWidth: 2,
+          borderRadius: 6
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { display: false },
+          title: {
+            display: true,
+            text: 'Approved Donors by Blood Group',
+            font: { size: 14, weight: 'bold' },
+            color: '#111827',
+            padding: { bottom: 16 }
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            ticks: { stepSize: 1 },
+            grid: { color: '#f3f4f6' }
+          },
+          x: {
+            grid: { display: false }
+          }
+        }
+      }
+    });
+
+    // ---- CHART 2: Application Status Doughnut ----
+    const statusCtx = document.getElementById('statusChart').getContext('2d');
+    statusChartInstance = new Chart(statusCtx, {
+      type: 'doughnut',
+      data: {
+        labels: ['Approved', 'Pending', 'Rejected'],
+        datasets: [{
+          data: [stats.approved, stats.pending, stats.rejected],
+          backgroundColor: ['#dcfce7', '#fef3c7', '#fee2e2'],
+          borderColor: ['#16a34a', '#d97706', '#dc2626'],
+          borderWidth: 2
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          title: {
+            display: true,
+            text: 'Application Status Overview',
+            font: { size: 14, weight: 'bold' },
+            color: '#111827',
+            padding: { bottom: 16 }
+          },
+          legend: {
+            position: 'bottom',
+            labels: {
+              padding: 16,
+              font: { size: 12 }
+            }
+          }
+        }
+      }
+    });
+
+    // ---- CHART 3: Donors by State ----
+    const stateCounts = {};
+    donors.forEach(d => {
+      if (d.state) {
+        stateCounts[d.state] = (stateCounts[d.state] || 0) + 1;
+      }
+    });
+
+    const sortedStates = Object.entries(stateCounts)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 10); // top 10 states
+
+    const stateLabels = sortedStates.map(s => s[0]);
+    const stateData = sortedStates.map(s => s[1]);
+
+    const stateCtx = document.getElementById('stateChart').getContext('2d');
+    stateChartInstance = new Chart(stateCtx, {
+      type: 'bar',
+      data: {
+        labels: stateLabels,
+        datasets: [{
+          label: 'Number of Donors',
+          data: stateData,
+          backgroundColor: '#fee2e2',
+          borderColor: '#dc2626',
+          borderWidth: 2,
+          borderRadius: 6
+        }]
+      },
+      options: {
+        indexAxis: 'y',
+        responsive: true,
+        plugins: {
+          legend: { display: false },
+          title: {
+            display: true,
+            text: 'Top 10 States by Donor Count',
+            font: { size: 14, weight: 'bold' },
+            color: '#111827',
+            padding: { bottom: 16 }
+          }
+        },
+        scales: {
+          x: {
+            beginAtZero: true,
+            ticks: { stepSize: 1 },
+            grid: { color: '#f3f4f6' }
+          },
+          y: {
+            grid: { display: false }
+          }
+        }
+      }
+    });
+
+  } catch (err) {
+    console.error('Chart error:', err);
+  }
+}
+
+    async function fetchPendingDonors() {
+      const container = document.getElementById('pendingDonors');
+      showLoader('pendingDonors');
+
+      try {
+        const res = await fetch(`${API_BASE}/donors/pending`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const donors = await res.json();
+
+        if (donors.length === 0) {
+          container.innerHTML = `
+            <div class="text-center py-12 text-gray-500">
+              <p>No pending applications at the moment.</p>
+            </div>
+          `;
+          return;
+        }
+
+        container.innerHTML = `
+          <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+              <thead class="bg-gray-900 text-white">
+                <tr>
+                  <th class="px-4 py-3 text-left">Name</th>
+                  <th class="px-4 py-3 text-left">Blood Group</th>
+                  <th class="px-4 py-3 text-left">Organs</th>
+                  <th class="px-4 py-3 text-left">Location</th>
+                  <th class="px-4 py-3 text-left">Contact</th>
+                  <th class="px-4 py-3 text-left">Status</th>
+                  <th class="px-4 py-3 text-left">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${donors.map(d => `
+                  <tr class="border-b border-gray-100 hover:bg-gray-50" id="row-${d._id}">
+                    <td class="px-4 py-3">
+                      <div class="font-medium text-gray-900">${d.name}</div>
+                      <div class="text-xs text-gray-400">${d.age} years</div>
+                    </td>
+                    <td class="px-4 py-3">
+                      <span style="display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:50%;font-weight:700;font-size:0.75rem;${getBloodGroupColor(d.bloodGroup)}">
+                        ${d.bloodGroup}
+                      </span>
+                    </td>
+                    <td class="px-4 py-3 text-gray-600">
+                      ${d.organs && d.organs.length > 0 ? d.organs.join(', ') : '—'}
+                    </td>
+                    <td class="px-4 py-3 text-gray-600">
+                      ${d.city}, ${d.state}
+                    </td>
+                    <td class="px-4 py-3">
+                      <div class="text-gray-600">${d.phone}</div>
+                      <div class="text-xs text-gray-400">${d.email}</div>
+                    </td>
+                    <td class="px-4 py-3">
+                      <span class="px-2 py-1 bg-yellow-100 text-yellow-800 rounded-full text-xs font-semibold uppercase">
+                        ${d.status}
+                      </span>
+                    </td>
+                    <td class="px-4 py-3">
+                      <div class="flex gap-2">
+                        <button onclick="updateStatus('${d._id}', 'approved')"
+                          class="px-3 py-1 bg-green-100 text-green-700 rounded-md text-xs font-semibold hover:bg-green-600 hover:text-white transition-all">
+                          ✓ Approve
+                        </button>
+                        <button onclick="updateStatus('${d._id}', 'rejected')"
+                          class="px-3 py-1 bg-red-100 text-red-700 rounded-md text-xs font-semibold hover:bg-red-600 hover:text-white transition-all">
+                          ✗ Reject
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+        `;
+      } catch (err) {
+        container.innerHTML = `
+          <div class="p-6 text-red-600">Failed to load donors. Make sure backend is running.</div>
+        `;
+      }
+    }
+
+
+    let allApprovedDonors = [];
+let approvedCurrentPage = 1;
+
+async function fetchApprovedDonors() {
+  try {
+    const res = await fetch(`${API_BASE}/donors`);
+    allApprovedDonors = await res.json();
+    approvedCurrentPage = 1;
+    filterApprovedDonors();
+  } catch (err) {
+    document.getElementById('approvedDonors').innerHTML = `
+      <div class="p-6 text-red-600">Failed to load approved donors.</div>
+    `;
+  }
+}
+
+function filterApprovedDonors() {
+  const search = document.getElementById('donorSearch')?.value.toLowerCase() || '';
+  const bloodFilter = document.getElementById('donorBloodFilter')?.value || '';
+  const rowsPerPage = parseInt(document.getElementById('rowsPerPage')?.value) || 10;
+
+  const filtered = allApprovedDonors.filter(d => {
+    const matchSearch = !search ||
+      d.name.toLowerCase().includes(search) ||
+      d.email.toLowerCase().includes(search) ||
+      d.city.toLowerCase().includes(search);
+    const matchBlood = !bloodFilter || d.bloodGroup === bloodFilter;
+    return matchSearch && matchBlood;
+  });
+
+  const totalPages = Math.ceil(filtered.length / rowsPerPage);
+  if (approvedCurrentPage > totalPages) approvedCurrentPage = 1;
+
+  const start = (approvedCurrentPage - 1) * rowsPerPage;
+  const pageDonors = filtered.slice(start, start + rowsPerPage);
+
+  const container = document.getElementById('approvedDonors');
+
+  if (filtered.length === 0) {
+    container.innerHTML = `
+      <div class="text-center py-12 text-gray-500">
+        <p>No donors found.</p>
+      </div>
+    `;
+    document.getElementById('approvedPagination').innerHTML = '';
+    return;
+  }
+
+  container.innerHTML = `
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead class="bg-gray-900 text-white">
+          <tr>
+            <th class="px-4 py-3 text-left">#</th>
+            <th class="px-4 py-3 text-left">Name</th>
+            <th class="px-4 py-3 text-left">Blood Group</th>
+            <th class="px-4 py-3 text-left">Organs</th>
+            <th class="px-4 py-3 text-left">Location</th>
+            <th class="px-4 py-3 text-left">Contact</th>
+            <th class="px-4 py-3 text-left">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${pageDonors.map((d, i) => `
+            <tr class="border-b border-gray-100 hover:bg-gray-50" id="approved-row-${d._id}">
+              <td class="px-4 py-3 text-gray-400">${start + i + 1}</td>
+              <td class="px-4 py-3">
+                <div class="font-medium text-gray-900">${d.name}</div>
+                <div class="text-xs text-gray-400">${d.age} years</div>
+              </td>
+              <td class="px-4 py-3">
+                <span style="display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:50%;font-weight:700;font-size:0.75rem;${getBloodGroupColor(d.bloodGroup)}">
+                  ${d.bloodGroup}
+                </span>
+              </td>
+              <td class="px-4 py-3 text-gray-600">
+                ${d.organs && d.organs.length > 0 ? d.organs.join(', ') : 'Blood only'}
+              </td>
+              <td class="px-4 py-3 text-gray-600">
+                ${d.city}, ${d.state}
+              </td>
+              <td class="px-4 py-3">
+                <div class="text-gray-600">${d.phone}</div>
+                <div class="text-xs text-gray-400">${d.email}</div>
+              </td>
+              <td class="px-4 py-3">
+                <button onclick="deleteDonor('${d._id}', this)"
+                  class="px-3 py-1 bg-red-100 text-red-700 rounded-md text-xs font-semibold hover:bg-red-600 hover:text-white transition-all">
+                  🗑 Delete
+                </button>
+              </td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    </div>
+  `;
+
+  // Pagination
+  const pagination = document.getElementById('approvedPagination');
+  if (totalPages <= 1) {
+    pagination.innerHTML = `<p class="text-sm text-gray-500">Showing ${filtered.length} of ${allApprovedDonors.length} donors</p>`;
+    return;
+  }
+
+  pagination.innerHTML = `
+    <div class="flex items-center justify-between">
+      <p class="text-sm text-gray-500">
+        Showing ${start + 1}–${Math.min(start + rowsPerPage, filtered.length)} of ${filtered.length} donors
+      </p>
+      <div class="flex items-center gap-2">
+        <button onclick="changeApprovedPage(${approvedCurrentPage - 1})"
+          ${approvedCurrentPage === 1 ? 'disabled' : ''}
+          class="px-3 py-1.5 rounded-lg border text-sm font-medium ${approvedCurrentPage === 1 ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-white text-gray-700 hover:bg-gray-50 border-gray-300'}">
+          ← Prev
+        </button>
+        ${Array.from({length: totalPages}, (_, i) => i + 1).map(page => `
+          <button onclick="changeApprovedPage(${page})"
+            class="px-3 py-1.5 rounded-lg border text-sm font-medium ${page === approvedCurrentPage ? 'bg-red-600 text-white border-red-600' : 'bg-white text-gray-700 hover:bg-gray-50 border-gray-300'}">
+            ${page}
+          </button>
+        `).join('')}
+        <button onclick="changeApprovedPage(${approvedCurrentPage + 1})"
+          ${approvedCurrentPage === totalPages ? 'disabled' : ''}
+          class="px-3 py-1.5 rounded-lg border text-sm font-medium ${approvedCurrentPage === totalPages ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-white text-gray-700 hover:bg-gray-50 border-gray-300'}">
+          Next →
+        </button>
+      </div>
+    </div>
+  `;
+}
+
+function changeApprovedPage(page) {
+  const rowsPerPage = parseInt(document.getElementById('rowsPerPage')?.value) || 10;
+  const search = document.getElementById('donorSearch')?.value.toLowerCase() || '';
+  const bloodFilter = document.getElementById('donorBloodFilter')?.value || '';
+  const filtered = allApprovedDonors.filter(d => {
+    const matchSearch = !search ||
+      d.name.toLowerCase().includes(search) ||
+      d.email.toLowerCase().includes(search) ||
+      d.city.toLowerCase().includes(search);
+    const matchBlood = !bloodFilter || d.bloodGroup === bloodFilter;
+    return matchSearch && matchBlood;
+  });
+  const totalPages = Math.ceil(filtered.length / rowsPerPage);
+  if (page < 1 || page > totalPages) return;
+  approvedCurrentPage = page;
+  filterApprovedDonors();
+}
+
+async function deleteDonor(id, btn) {
+  if (!confirm('Are you sure you want to delete this donor?')) return;
+  
+  const cleanId = id.trim();
+  console.log('Clean ID:', cleanId);
+
+  try {
+    const res = await fetch(`${API_BASE}/donors/${cleanId}`, {
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+
+    console.log('Response status:', res.status);
+
+    if (res.ok) {
+      btn.closest('tr').remove();
+      fetchStats();
+    } else {
+      const data = await res.json();
+      console.log('Error:', data);
+    }
+  } catch (err) {
+    console.error('Delete error:', err);
+  }
+}
+
+
+async function fetchContactMessages() {
+  const container = document.getElementById('contactMessages');
+  showLoader('contactMessages');
+
+  try {
+    const res = await fetch(`${API_BASE}/contacts`, {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+    const messages = await res.json();
+
+    if (messages.length === 0) {
+      container.innerHTML = `
+        <div class="text-center py-12 text-gray-500">
+          <p>No contact messages yet.</p>
+        </div>
+      `;
+      return;
+    }
+
+    container.innerHTML = `
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead class="bg-gray-900 text-white">
+            <tr>
+              <th class="px-4 py-3 text-left">Name</th>
+              <th class="px-4 py-3 text-left">Email</th>
+              <th class="px-4 py-3 text-left">Subject</th>
+              <th class="px-4 py-3 text-left">Message</th>
+              <th class="px-4 py-3 text-left">Date</th>
+              <th class="px-4 py-3 text-left">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${messages.map(m => `
+              <tr class="border-b border-gray-100 hover:bg-gray-50" id="msg-row-${m._id}">
+                <td class="px-4 py-3 font-medium text-gray-900">${m.name}</td>
+                <td class="px-4 py-3 text-gray-600">${m.email}</td>
+                <td class="px-4 py-3 text-gray-600">${m.subject}</td>
+                <td class="px-4 py-3 text-gray-600 max-w-xs">
+                  <div id="msg-preview-${m._id}" class="truncate cursor-pointer hover:text-red-600" 
+                    onclick="toggleMessage('${m._id}')" title="Click to expand">
+                    ${m.message}
+                  </div>
+                  <div id="msg-full-${m._id}" class="hidden text-gray-600 mt-1">
+                    ${m.message}
+                    <span onclick="toggleMessage('${m._id}')" class="text-red-600 cursor-pointer text-xs ml-1">Show less</span>
+                  </div>
+                </td>
+                <td class="px-4 py-3 text-gray-400 text-xs">
+                  ${new Date(m.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
+                </td>
+                <td class="px-4 py-3">
+                  <button onclick="deleteMessage('${m._id}', this)"
+                    class="px-3 py-1 bg-red-100 text-red-700 rounded-md text-xs font-semibold hover:bg-red-600 hover:text-white transition-all">
+                    🗑 Delete
+                  </button>
+                </td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      </div>
+    `;
+  } catch (err) {
+    container.innerHTML = `
+      <div class="p-6 text-red-600">Failed to load messages.</div>
+    `;
+  }
+}
+
+
+async function deleteMessage(id, btn) {
+  if (!confirm('Are you sure you want to delete this message?')) return;
+
+  try {
+    const res = await fetch(`${API_BASE}/contacts/${id}`, {
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+
+    if (res.ok) {
+      btn.closest('tr').remove();
+    }
+  } catch (err) {
+    console.error('Delete message error:', err);
+  }
+}
+
+function exportCSV() {
+  const link = document.createElement('a');
+  link.href = `${API_BASE}/donors/export`;
+  link.setAttribute('download', 'donors.csv');
+  
+  // Add auth token as query param
+  link.href = `${API_BASE}/donors/export?token=${token}`;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
+
+
+    async function updateStatus(id, status) {
+      try {
+        const res = await fetch(`${API_BASE}/donors/${id}`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({ status })
+        });
+
+        if (res.ok) {
+          document.getElementById(`row-${id}`)?.remove();
+          fetchStats();
+          fetchApprovedDonors();
+        }
+      } catch (err) {
+        console.error('Update error:', err);
+      }
+    }
+
+    async function deleteDonor(id) {
+      if (!confirm('Are you sure you want to delete this donor?')) return;
+
+      try {
+        const res = await fetch(`${API_BASE}/donors/${id}`, {
+          method: 'DELETE',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        if (res.ok) {
+          document.getElementById(`row-${id}`)?.remove();
+          fetchStats();
+        }
+      } catch (err) {
+        console.error('Delete error:', err);
+      }
+    }
+
+    async function fetchEmergencyAdmin() {
+  const container = document.getElementById('adminEmergency');
+  showLoader('adminEmergency');
+
+  try {
+    const res = await fetch(`${API_BASE}/emergency`);
+    const requests = await res.json();
+
+    if (requests.length === 0) {
+      container.innerHTML = `<div class="text-center py-8 text-gray-500">No active emergency requests.</div>`;
+      return;
+    }
+
+    container.innerHTML = `
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead class="bg-gray-900 text-white">
+            <tr>
+              <th class="px-4 py-3 text-left">Patient</th>
+              <th class="px-4 py-3 text-left">Blood/Organ</th>
+              <th class="px-4 py-3 text-left">Hospital</th>
+              <th class="px-4 py-3 text-left">Location</th>
+              <th class="px-4 py-3 text-left">Contact</th>
+              <th class="px-4 py-3 text-left">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${requests.map(r => `
+              <tr class="border-b border-gray-100 hover:bg-gray-50" id="emergency-row-${r._id}">
+                <td class="px-4 py-3 font-medium text-gray-900">${r.patientName}</td>
+                <td class="px-4 py-3">
+                  <span style="padding:2px 8px;background:#fee2e2;color:#dc2626;border-radius:9999px;font-size:0.75rem;font-weight:700;">${r.bloodGroup}</span>
+                  ${r.organ ? `<span style="padding:2px 8px;background:#dbeafe;color:#2563eb;border-radius:9999px;font-size:0.75rem;font-weight:600;margin-left:4px;">${r.organ}</span>` : ''}
+                </td>
+                <td class="px-4 py-3 text-gray-600">${r.hospital}</td>
+                <td class="px-4 py-3 text-gray-600">${r.city}, ${r.state}</td>
+                <td class="px-4 py-3">
+                  <div class="text-gray-600">${r.contactName}</div>
+                  <div class="text-red-600 font-semibold">${r.contactPhone}</div>
+                </td>
+                <td class="px-4 py-3">
+                  <div class="flex gap-2">
+                    <button onclick="resolveEmergency('${r._id}')"
+                      class="px-3 py-1 bg-green-100 text-green-700 rounded-md text-xs font-semibold hover:bg-green-600 hover:text-white transition-all">
+                      ✓ Resolve
+                    </button>
+                    <button onclick="deleteEmergency('${r._id}')"
+                      class="px-3 py-1 bg-red-100 text-red-700 rounded-md text-xs font-semibold hover:bg-red-600 hover:text-white transition-all">
+                      🗑 Delete
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      </div>
+    `;
+  } catch (err) {
+    container.innerHTML = `<div class="p-6 text-red-600">Failed to load emergency requests.</div>`;
+  }
+}
+
+async function resolveEmergency(id) {
+  if (!confirm('Mark this request as resolved?')) return;
+  try {
+    const res = await fetch(`${API_BASE}/emergency/${id}`, {
+      method: 'PATCH',
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+    if (res.ok) {
+      document.getElementById(`emergency-row-${id}`)?.remove();
+    }
+  } catch (err) {
+    console.error('Resolve error:', err);
+  }
+}
+
+async function deleteEmergency(id) {
+  if (!confirm('Delete this emergency request?')) return;
+  try {
+    const res = await fetch(`${API_BASE}/emergency/${id}`, {
+      method: 'DELETE',
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+    if (res.ok) {
+      document.getElementById(`emergency-row-${id}`)?.remove();
+    }
+  } catch (err) {
+    console.error('Delete error:', err);
+  }
+}
+
+function toggleMessage(id) {
+  const preview = document.getElementById(`msg-preview-${id}`);
+  const full = document.getElementById(`msg-full-${id}`);
+  preview.classList.toggle('hidden');
+  full.classList.toggle('hidden');
+}
+
+
+  </script>
+
+
+</body>
+</html>

@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Emergency Requests - LifeLine</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+</head>
+<body class="bg-white text-gray-700">
+
+  <div id="navbar"></div>
+
+  <div class="max-w-5xl mx-auto px-4 py-16">
+
+    <!-- Page Header -->
+    <div class="text-center mb-12">
+      <div class="inline-flex items-center justify-center w-16 h-16 bg-red-100 rounded-full mb-4">
+        <i data-lucide="alert-triangle" class="w-8 h-8 text-red-600"></i>
+      </div>
+      <h1 class="text-4xl font-bold text-gray-900 mb-4">Emergency Requests</h1>
+      <p class="text-gray-600 max-w-2xl mx-auto">
+        Urgent blood and organ requests from patients in need. If you can help, please contact immediately.
+      </p>
+    </div>
+
+    <!-- Post Emergency Request Button -->
+    <div class="flex justify-end mb-6">
+      <button onclick="document.getElementById('requestForm').classList.toggle('hidden')"
+        class="flex items-center gap-2 px-5 py-2.5 bg-red-600 text-white rounded-lg font-semibold hover:bg-red-700 transition-all">
+        <i data-lucide="plus" class="w-4 h-4"></i> Post Emergency Request
+      </button>
+    </div>
+
+    <!-- Emergency Request Form -->
+    <div id="requestForm" class="hidden bg-white rounded-xl border-2 border-red-200 shadow-lg p-6 mb-8">
+      <h2 class="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+        <i data-lucide="alert-triangle" class="w-5 h-5 text-red-600"></i>
+        Post Emergency Request
+      </h2>
+
+      <div id="formAlert"></div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Patient Name *</label>
+          <input type="text" id="patientName" placeholder="Patient's full name"
+            class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-red-500" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Blood Group *</label>
+          <select id="reqBloodGroup"
+            class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-red-500">
+            <option value="">Select blood group</option>
+            <option>A+</option><option>A-</option>
+            <option>B+</option><option>B-</option>
+            <option>AB+</option><option>AB-</option>
+            <option>O+</option><option>O-</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Organ Needed (Optional)</label>
+          <select id="reqOrgan"
+            class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-red-500">
+            <option value="">Blood only</option>
+            <option>Kidney</option><option>Liver</option>
+            <option>Heart</option><option>Lungs</option>
+            <option>Pancreas</option><option>Cornea</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Hospital Name *</label>
+          <input type="text" id="hospital" placeholder="e.g., AIIMS Mumbai"
+            class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-red-500" />
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">City *</label>
+          <input type="text" id="reqCity" placeholder="e.g., Mumbai"
+            class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-red-500" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">State *</label>
+          <select id="reqState"
+            class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-red-500">
+            <option value="">Select state</option>
+            <option>Andhra Pradesh</option><option>Arunachal Pradesh</option>
+            <option>Assam</option><option>Bihar</option>
+            <option>Chhattisgarh</option><option>Goa</option>
+            <option>Gujarat</option><option>Haryana</option>
+            <option>Himachal Pradesh</option><option>Jharkhand</option>
+            <option>Karnataka</option><option>Kerala</option>
+            <option>Madhya Pradesh</option><option>Maharashtra</option>
+            <option>Manipur</option><option>Meghalaya</option>
+            <option>Mizoram</option><option>Nagaland</option>
+            <option>Odisha</option><option>Punjab</option>
+            <option>Rajasthan</option><option>Sikkim</option>
+            <option>Tamil Nadu</option><option>Telangana</option>
+            <option>Tripura</option><option>Uttar Pradesh</option>
+            <option>Uttarakhand</option><option>West Bengal</option>
+            <option>Delhi</option><option>Jammu and Kashmir</option>
+            <option>Ladakh</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Contact Person Name *</label>
+          <input type="text" id="contactName" placeholder="Your name"
+            class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-red-500" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Contact Phone *</label>
+          <input type="tel" id="contactPhone" placeholder="+91 98765 43210"
+            class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-red-500" />
+        </div>
+      </div>
+
+      <div class="mb-6">
+        <label class="block text-sm font-medium text-gray-700 mb-1">Additional Message (Optional)</label>
+        <textarea id="reqMessage" rows="3" placeholder="Any additional information..."
+          class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-red-500 resize-none"></textarea>
+      </div>
+
+      <div class="flex gap-3">
+        <button onclick="submitRequest()"
+          class="flex-1 py-2.5 bg-red-600 text-white rounded-lg font-semibold hover:bg-red-700 transition-all text-sm">
+          Submit Emergency Request
+        </button>
+        <button onclick="document.getElementById('requestForm').classList.add('hidden')"
+          class="px-6 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-700 hover:bg-gray-50">
+          Cancel
+        </button>
+      </div>
+    </div>
+
+    <!-- Active Emergency Requests -->
+    <div id="emergencyList"></div>
+
+  </div>
+
+  <div id="footer"></div>
+
+  <script src="../js/shared.js"></script>
+  <script>
+    document.getElementById('navbar').innerHTML = renderNavbar('emergency');
+    document.getElementById('footer').innerHTML = renderFooter();
+    lucide.createIcons();
+
+    async function fetchEmergencyRequests() {
+      showLoader('emergencyList');
+      try {
+        const res = await fetch(`${API_BASE}/emergency`);
+        const requests = await res.json();
+
+        if (requests.length === 0) {
+          document.getElementById('emergencyList').innerHTML = `
+            <div class="text-center py-16 bg-gray-50 rounded-xl">
+              <i data-lucide="check-circle" class="w-12 h-12 text-green-500 mx-auto mb-4"></i>
+              <h3 class="text-xl font-semibold text-gray-900 mb-2">No Active Emergency Requests</h3>
+              <p class="text-gray-600">There are no urgent requests at the moment.</p>
+            </div>
+          `;
+          lucide.createIcons();
+          return;
+        }
+
+        document.getElementById('emergencyList').innerHTML = `
+          <div class="space-y-4">
+            ${requests.map(r => `
+              <div class="bg-white rounded-xl border-2 border-red-200 shadow p-6 relative">
+                <div style="position:absolute;top:-10px;right:12px;background:#dc2626;color:white;padding:2px 12px;border-radius:9999px;font-size:0.7rem;font-weight:700;display:flex;align-items:center;gap:4px;">
+                  🚨 URGENT
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+                  <div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-1">${r.patientName}</h3>
+                    <div class="flex items-center gap-2 mb-2">
+                      <span style="padding:2px 10px;background:#fee2e2;color:#dc2626;border-radius:9999px;font-size:0.8rem;font-weight:700;">${r.bloodGroup}</span>
+                      ${r.organ ? `<span style="padding:2px 10px;background:#dbeafe;color:#2563eb;border-radius:9999px;font-size:0.8rem;font-weight:600;">${r.organ}</span>` : ''}
+                    </div>
+                    <p class="text-sm text-gray-600 flex items-center gap-1">
+                      <i data-lucide="building-2" class="w-4 h-4"></i> ${r.hospital}
+                    </p>
+                    <p class="text-sm text-gray-600 flex items-center gap-1">
+                      <i data-lucide="map-pin" class="w-4 h-4"></i> ${r.city}, ${r.state}
+                    </p>
+                  </div>
+                  <div>
+                    ${r.message ? `<p class="text-sm text-gray-600 mb-3 italic">"${r.message}"</p>` : ''}
+                    <p class="text-sm font-semibold text-gray-900 mb-1">Contact:</p>
+                    <p class="text-sm text-gray-600">${r.contactName}</p>
+                    <a href="tel:${r.contactPhone}" class="text-red-600 font-bold hover:underline">${r.contactPhone}</a>
+                    <p class="text-xs text-gray-400 mt-2">Posted: ${new Date(r.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</p>
+                  </div>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        `;
+        lucide.createIcons();
+      } catch (err) {
+        document.getElementById('emergencyList').innerHTML = `
+          <div class="bg-red-50 text-red-800 p-4 rounded-lg">Failed to load requests. Make sure backend is running.</div>
+        `;
+      }
+    }
+
+    async function submitRequest() {
+      const patientName = document.getElementById('patientName').value.trim();
+      const bloodGroup = document.getElementById('reqBloodGroup').value;
+      const organ = document.getElementById('reqOrgan').value;
+      const hospital = document.getElementById('hospital').value.trim();
+      const city = document.getElementById('reqCity').value.trim();
+      const state = document.getElementById('reqState').value;
+      const contactName = document.getElementById('contactName').value.trim();
+      const contactPhone = document.getElementById('contactPhone').value.trim();
+      const message = document.getElementById('reqMessage').value.trim();
+
+      if (!patientName || !bloodGroup || !hospital || !city || !state || !contactName || !contactPhone) {
+        showAlert('formAlert', 'Please fill in all required fields.', 'error');
+        return;
+      }
+
+      try {
+        const res = await fetch(`${API_BASE}/emergency`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ patientName, bloodGroup, organ, hospital, city, state, contactName, contactPhone, message })
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+          showAlert('formAlert', '🚨 Emergency request posted successfully!', 'success');
+          document.getElementById('requestForm').classList.add('hidden');
+          fetchEmergencyRequests();
+          // Clear form
+          ['patientName', 'hospital', 'reqCity', 'contactName', 'contactPhone', 'reqMessage'].forEach(id => {
+            document.getElementById(id).value = '';
+          });
+          document.getElementById('reqBloodGroup').value = '';
+          document.getElementById('reqOrgan').value = '';
+          document.getElementById('reqState').value = '';
+        } else {
+          showAlert('formAlert', data.error || 'Failed to post request.', 'error');
+        }
+      } catch (err) {
+        showAlert('formAlert', 'Network error. Make sure backend is running.', 'error');
+      }
+    }
+
+    fetchEmergencyRequests();
+  </script>
+
+</body>
+</html>

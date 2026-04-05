@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Register as Donor - LifeLine</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+</head>
+<body class="bg-white">
+
+  <div id="navbar"></div>
+
+  <div class="container mx-auto px-4 py-16 max-w-2xl">
+
+    <!-- Page Header -->
+    <div class="text-center mb-12">
+      <div class="inline-flex items-center justify-center w-16 h-16 bg-red-100 rounded-full mb-4">
+        <i data-lucide="user-plus" class="w-8 h-8 text-red-600"></i>
+      </div>
+      <h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4">Register as a Donor</h1>
+      <p class="text-gray-600 max-w-xl mx-auto">
+        Fill out the form below to become a life-saving donor. Your information will be reviewed by our admin team.
+      </p>
+    </div>
+
+    <!-- Form Card -->
+    <div class="bg-white rounded-xl border border-gray-200 shadow-lg p-8">
+
+      <div id="alertBox"></div>
+
+      <!-- Personal Information -->
+      <h2 class="text-2xl font-bold text-gray-900 mb-6">Personal Information</h2>
+
+      <div class="grid grid-cols-2 gap-4 mb-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Full Name <span class="text-red-600">*</span></label>
+          <input type="text" id="name" placeholder="John Doe"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Email <span class="text-red-600">*</span></label>
+          <input type="email" id="email" placeholder="john@example.com"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent" />
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 gap-4 mb-8">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Phone Number <span class="text-red-600">*</span></label>
+          <input type="tel" id="phone" placeholder="+91-9876543210"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Age <span class="text-red-600">*</span></label>
+          <input type="number" id="age" placeholder="25" min="18" max="65"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent" />
+        </div>
+      </div>
+
+      <!-- Medical Information -->
+      <h2 class="text-2xl font-bold text-gray-900 mb-6">Medical Information</h2>
+
+      <div class="mb-4">
+        <label class="block text-sm font-medium text-gray-700 mb-1">Blood Group <span class="text-red-600">*</span></label>
+        <select id="bloodGroup"
+          class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent">
+          <option value="">Select blood group</option>
+          <option>A+</option><option>A-</option>
+          <option>B+</option><option>B-</option>
+          <option>AB+</option><option>AB-</option>
+          <option>O+</option><option>O-</option>
+        </select>
+      </div>
+
+      <div class="mb-4">
+        <label class="block text-sm font-medium text-gray-700 mb-2">Organs to Donate (Select all that apply)</label>
+        <div class="grid grid-cols-3 gap-y-3">
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" value="Kidney" class="organ-check w-4 h-4 rounded border-gray-300 accent-red-600" />
+            <span class="text-sm text-gray-700">Kidney</span>
+          </label>
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" value="Liver" class="organ-check w-4 h-4 rounded border-gray-300 accent-red-600" />
+            <span class="text-sm text-gray-700">Liver</span>
+          </label>
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" value="Heart" class="organ-check w-4 h-4 rounded border-gray-300 accent-red-600" />
+            <span class="text-sm text-gray-700">Heart</span>
+          </label>
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" value="Lungs" class="organ-check w-4 h-4 rounded border-gray-300 accent-red-600" />
+            <span class="text-sm text-gray-700">Lungs</span>
+          </label>
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" value="Pancreas" class="organ-check w-4 h-4 rounded border-gray-300 accent-red-600" />
+            <span class="text-sm text-gray-700">Pancreas</span>
+          </label>
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" value="Cornea" class="organ-check w-4 h-4 rounded border-gray-300 accent-red-600" />
+            <span class="text-sm text-gray-700">Cornea</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="mb-8">
+        <label class="block text-sm font-medium text-gray-700 mb-1">Medical Certificate URL (Optional)</label>
+        <div class="flex gap-2">
+            <input type="url" id="medicalCertificateUrl" placeholder="https://example.com/certificate.pdf"
+            class="flex-1 px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent" />
+            <button onclick="document.getElementById('fileUpload').click()"
+            class="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-md text-sm text-gray-700 hover:bg-gray-50 transition-all whitespace-nowrap">
+            <i data-lucide="upload" class="w-4 h-4"></i> Upload
+            </button>
+            <input type="file" id="fileUpload" accept=".pdf,.jpg,.png" class="hidden"
+            onchange="document.getElementById('medicalCertificateUrl').value = this.files[0]?.name || ''" />
+        </div>
+        <p class="text-xs text-gray-500 mt-1">Provide a URL to your medical certificate or fitness document</p>
+        </div>
+
+      <!-- Location Information -->
+      <h2 class="text-2xl font-bold text-gray-900 mb-6">Location Information</h2>
+
+      <div class="grid grid-cols-2 gap-4 mb-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">City <span class="text-red-600">*</span></label>
+          <input type="text" id="city" placeholder="Mumbai"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">State <span class="text-red-600">*</span></label>
+          <select id="state"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent">
+            <option value="">Select state</option>
+            <option>Andhra Pradesh</option><option>Arunachal Pradesh</option>
+            <option>Assam</option><option>Bihar</option>
+            <option>Chhattisgarh</option><option>Goa</option>
+            <option>Gujarat</option><option>Haryana</option>
+            <option>Himachal Pradesh</option><option>Jharkhand</option>
+            <option>Karnataka</option><option>Kerala</option>
+            <option>Madhya Pradesh</option><option>Maharashtra</option>
+            <option>Manipur</option><option>Meghalaya</option>
+            <option>Mizoram</option><option>Nagaland</option>
+            <option>Odisha</option><option>Punjab</option>
+            <option>Rajasthan</option><option>Sikkim</option>
+            <option>Tamil Nadu</option><option>Telangana</option>
+            <option>Tripura</option><option>Uttar Pradesh</option>
+            <option>Uttarakhand</option><option>West Bengal</option>
+            <option>Delhi</option><option>Jammu and Kashmir</option>
+            <option>Ladakh</option>
+          </select>
+        </div>
+      </div>
+
+      <button onclick="detectLocation()"
+        class="w-full flex items-center justify-center gap-2 px-4 py-2.5 border border-gray-300 rounded-md text-sm text-gray-700 hover:bg-gray-50 transition-all mb-1">
+        <i data-lucide="map-pin" class="w-4 h-4"></i>
+        Auto-Detect My Location
+      </button>
+      <p class="text-xs text-gray-500 mb-1">Allow location access to help recipients find donors near them</p>
+      <p id="locationStatus" class="text-sm text-green-600 mb-6 hidden">✅ Location detected successfully!</p>
+
+      <!-- Consent -->
+      <div class="flex items-start gap-3 mb-6 mt-4">
+        <input type="checkbox" id="consent" class="w-4 h-4 mt-0.5 accent-red-600 flex-shrink-0" />
+        <label for="consent" class="text-sm text-gray-700 cursor-pointer">
+          I consent to donate my organs and blood, and I confirm that all the information provided is accurate. I understand that my registration will be reviewed by the admin team. <span class="text-red-600">*</span>
+        </label>
+      </div>
+
+      <!-- Submit Button -->
+      <button onclick="submitForm()"
+        class="w-full py-3 bg-red-600 text-white rounded-md font-semibold hover:bg-red-700 transition-all text-sm">
+        Register as Donor
+      </button>
+
+    </div>
+  </div>
+
+  <div id="footer"></div>
+
+  <script src="../js/shared.js"></script>
+  <script>
+    document.getElementById('navbar').innerHTML = renderNavbar('register');
+    document.getElementById('footer').innerHTML = renderFooter();
+    lucide.createIcons();
+
+    let latitude = null;
+    let longitude = null;
+
+    function detectLocation() {
+      if (!navigator.geolocation) {
+        showAlert('alertBox', 'Geolocation is not supported by your browser.', 'error');
+        return;
+      }
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          latitude = position.coords.latitude;
+          longitude = position.coords.longitude;
+          document.getElementById('locationStatus').classList.remove('hidden');
+        },
+        () => {
+          showAlert('alertBox', 'Failed to detect location. Please enable location services.', 'error');
+        }
+      );
+    }
+
+    async function submitForm() {
+      const name = document.getElementById('name').value.trim();
+      const age = parseInt(document.getElementById('age').value);
+      const email = document.getElementById('email').value.trim();
+      const phone = document.getElementById('phone').value.trim();
+      const bloodGroup = document.getElementById('bloodGroup').value;
+      const city = document.getElementById('city').value.trim();
+      const state = document.getElementById('state').value;
+      const consent = document.getElementById('consent').checked;
+      const medicalCertificateUrl = document.getElementById('medicalCertificateUrl').value.trim();
+      const organs = [...document.querySelectorAll('.organ-check:checked')].map(c => c.value);
+
+      if (!name || !age || !email || !phone || !bloodGroup || !city || !state) {
+        showAlert('alertBox', 'Please fill in all required fields.', 'error');
+        return;
+      }
+
+      if (!consent) {
+        showAlert('alertBox', 'Please give your consent to proceed.', 'error');
+        return;
+      }
+
+      try {
+        const res = await fetch(`${API_BASE}/donors`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name, age, email, phone, bloodGroup,
+            organs, city, state, latitude, longitude,
+            medicalCertificateUrl, consent
+          })
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+          showAlert('alertBox', '🎉 Registration successful! Your application is under review.', 'success');
+          document.querySelectorAll('input[type="text"], input[type="email"], input[type="tel"], input[type="number"], input[type="url"], select').forEach(el => el.value = '');
+          document.querySelectorAll('.organ-check').forEach(el => el.checked = false);
+          document.getElementById('consent').checked = false;
+          document.getElementById('locationStatus').classList.add('hidden');
+          latitude = null;
+          longitude = null;
+        } else {
+          showAlert('alertBox', data.error || 'Registration failed.', 'error');
+        }
+      } catch (err) {
+        showAlert('alertBox', 'Network error. Make sure backend is running.', 'error');
+      }
+    }
+  </script>
+
+</body>
+</html>

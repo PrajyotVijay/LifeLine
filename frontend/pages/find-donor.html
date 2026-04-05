@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Find a Donor - LifeLine</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+</head>
+<body class="bg-white text-gray-700">
+
+  <div id="navbar"></div>
+
+  <div class="container mx-auto px-4 py-16 max-w-7xl">
+
+    <!-- Page Header -->
+    <div class="text-center mb-12">
+      <div class="inline-flex items-center justify-center w-16 h-16 bg-red-100 rounded-full mb-4">
+        <i data-lucide="search" class="w-8 h-8 text-red-600"></i>
+      </div>
+      <h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4">Find a Donor</h1>
+      <p class="text-gray-600 max-w-2xl mx-auto">
+        Search for blood and organ donors in your area. Connect with verified donors to save lives.
+      </p>
+    </div>
+
+    <!-- Filters -->
+    <div class="bg-white rounded-xl shadow-lg border border-gray-100 p-6 mb-8">
+      <div class="flex items-center gap-2 mb-4">
+        <i data-lucide="filter" class="w-5 h-5 text-red-600"></i>
+        <h2 class="text-lg font-semibold text-gray-900">Search Filters</h2>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Blood Group</label>
+          <select id="bloodGroup"
+            class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-red-500">
+            <option value="">All</option>
+            <option>A+</option><option>A-</option>
+            <option>B+</option><option>B-</option>
+            <option>AB+</option><option>AB-</option>
+            <option>O+</option><option>O-</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Organ</label>
+          <select id="organ"
+            class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-red-500">
+            <option value="">All</option>
+            <option>Kidney</option><option>Liver</option>
+            <option>Heart</option><option>Lungs</option>
+            <option>Pancreas</option><option>Cornea</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">City</label>
+          <input type="text" id="city" placeholder="e.g., Mumbai"
+            class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-red-500" />
+        </div>
+        <div class="flex items-end">
+          <button onclick="fetchDonors()"
+            class="w-full flex items-center justify-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg font-semibold hover:bg-red-700 transition-all text-sm">
+            <i data-lucide="search" class="w-4 h-4"></i> Search
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Map -->
+    <h2 class="text-2xl font-bold text-gray-900 mb-4">Donor Locations</h2>
+    <div id="map" class="w-full h-96 rounded-xl mb-8 border border-gray-200 z-0"></div>
+
+    <!-- Results -->
+    <div class="flex items-center justify-between mb-6">
+      <h2 id="countTitle" class="text-2xl font-bold text-gray-900">Available Donors</h2>
+    </div>
+    <div id="donorResults"></div>
+
+  </div>
+
+  <div id="footer"></div>
+
+  <script src="../js/shared.js"></script>
+  <script>
+    document.getElementById('navbar').innerHTML = renderNavbar('find-donor');
+    document.getElementById('footer').innerHTML = renderFooter();
+    lucide.createIcons();
+
+    // Init Map
+    const map = L.map('map').setView([20.5937, 78.9629], 5);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    let markers = [];
+
+    function clearMarkers() {
+      markers.forEach(m => map.removeLayer(m));
+      markers = [];
+    }
+
+    function addMarkersToMap(donors) {
+      clearMarkers();
+      donors.forEach(donor => {
+        if (donor.latitude && donor.longitude) {
+          const marker = L.marker([donor.latitude, donor.longitude])
+            .addTo(map)
+            .bindPopup(`
+              <strong>${donor.name}</strong><br>
+              Blood: <strong>${donor.bloodGroup}</strong><br>
+              ${donor.city}, ${donor.state}<br>
+              📞 ${donor.phone}
+            `);
+          markers.push(marker);
+        }
+      });
+    }
+
+    function getBloodGroupColor(bloodGroup) {
+      const colors = {
+        'A+':  'background-color:#fee2e2;color:#dc2626;',
+        'A-':  'background-color:#fecaca;color:#b91c1c;',
+        'B+':  'background-color:#dbeafe;color:#2563eb;',
+        'B-':  'background-color:#bfdbfe;color:#1d4ed8;',
+        'AB+': 'background-color:#f3e8ff;color:#9333ea;',
+        'AB-': 'background-color:#e9d5ff;color:#7e22ce;',
+        'O+':  'background-color:#dcfce7;color:#16a34a;',
+        'O-':  'background-color:#bbf7d0;color:#15803d;',
+      };
+      return colors[bloodGroup] || 'background-color:#f3f4f6;color:#4b5563;';
+    }
+
+    let currentPage = 1;
+    const perPage = 6;
+    let allDonors = [];
+
+    async function fetchDonors() {
+      const bloodGroup = document.getElementById('bloodGroup').value;
+      const organ = document.getElementById('organ').value;
+      const city = document.getElementById('city').value.trim();
+
+      const params = new URLSearchParams();
+      if (bloodGroup) params.append('bloodGroup', bloodGroup);
+      if (organ) params.append('organ', organ);
+      if (city) params.append('city', city);
+
+      showLoader('donorResults');
+
+      try {
+        const res = await fetch(`${API_BASE}/donors?${params.toString()}`);
+        allDonors = await res.json();
+        currentPage = 1;
+        document.getElementById('countTitle').textContent = `Available Donors (${allDonors.length})`;
+        addMarkersToMap(allDonors);
+        renderDonors();
+      } catch (err) {
+        document.getElementById('donorResults').innerHTML = `
+          <div class="bg-red-50 text-red-800 p-4 rounded-lg border border-red-200">
+            Failed to load donors. Please make sure the backend server is running.
+          </div>
+        `;
+      }
+    }
+
+    function renderDonors() {
+      const container = document.getElementById('donorResults');
+      const start = (currentPage - 1) * perPage;
+      const pageDonors = allDonors.slice(start, start + perPage);
+      const totalPages = Math.ceil(allDonors.length / perPage);
+
+      if (allDonors.length === 0) {
+        container.innerHTML = `
+          <div class="bg-gray-50 p-12 rounded-lg text-center">
+            <div class="flex justify-center mb-4">
+              <i data-lucide="search" class="w-12 h-12 text-gray-400"></i>
+            </div>
+            <h3 class="text-xl font-semibold text-gray-900 mb-2">No Donors Found</h3>
+            <p class="text-gray-600">Try adjusting your search filters to find more donors.</p>
+          </div>
+        `;
+        lucide.createIcons();
+        return;
+      }
+
+      container.innerHTML = `
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+          ${pageDonors.map(d => `
+            <div class="bg-white rounded-xl shadow hover:shadow-xl transition-shadow border border-gray-100 p-6">
+              <div class="flex items-center gap-4 mb-4">
+                <div style="width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;${getBloodGroupColor(d.bloodGroup)}">
+                  <span style="font-weight:700;font-size:0.875rem;">${d.bloodGroup}</span>
+                </div>
+                <div class="flex-1">
+                  <div class="flex items-center gap-2 flex-wrap">
+                    <div class="font-bold text-gray-900">${d.name}</div>
+                    <span style="display:inline-flex;align-items:center;padding:2px 8px;background-color:#dcfce7;color:#16a34a;border-radius:9999px;font-size:0.75rem;font-weight:600;">
+                      Verified
+                    </span>
+                  </div>
+                  <div class="text-sm text-gray-400">${d.age} years</div>
+                </div>
+              </div>
+              <div class="space-y-2 mb-4">
+                <div class="flex items-start gap-2 text-sm text-gray-600">
+                  <i data-lucide="map-pin" class="w-4 h-4 flex-shrink-0 mt-0.5 text-gray-400"></i>
+                  ${d.city}, ${d.state}
+                </div>
+                <div class="flex items-start gap-2 text-sm text-gray-600">
+                  <i data-lucide="heart" class="w-4 h-4 flex-shrink-0 mt-0.5 text-gray-400"></i>
+                  ${d.organs && d.organs.length > 0 ? d.organs.join(', ') : 'Blood only'}
+                </div>
+                <div class="flex items-center gap-2 text-sm">
+                  <i data-lucide="phone" class="w-4 h-4 flex-shrink-0 text-gray-400"></i>
+                  <a href="tel:${d.phone}" class="text-red-600 hover:underline">${d.phone}</a>
+                </div>
+                <div class="flex items-center gap-2 text-sm">
+                  <i data-lucide="mail" class="w-4 h-4 flex-shrink-0 text-gray-400"></i>
+                  <a href="mailto:${d.email}" class="text-red-600 hover:underline truncate">${d.email}</a>
+                </div>
+              </div>
+              <hr class="border-gray-100 mb-4" />
+              <a href="https://mail.google.com/mail/?view=cm&to=${d.email}" target="_blank"
+                class="w-full flex items-center justify-center gap-2 py-2 bg-red-600 text-white rounded-lg text-sm font-semibold hover:bg-red-700 transition-all">
+                Contact Donor
+              </a>
+            </div>
+          `).join('')}
+        </div>
+
+        ${totalPages > 1 ? `
+        <div class="flex items-center justify-center gap-2 mt-4">
+          <button onclick="changePage(${currentPage - 1})"
+            ${currentPage === 1 ? 'disabled' : ''}
+            class="px-4 py-2 rounded-lg border text-sm font-medium ${currentPage === 1 ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-white text-gray-700 hover:bg-gray-50 border-gray-300'}">
+            Prev
+          </button>
+          ${Array.from({length: totalPages}, (_, i) => i + 1).map(page => `
+            <button onclick="changePage(${page})"
+              class="px-4 py-2 rounded-lg border text-sm font-medium ${page === currentPage ? 'bg-red-600 text-white border-red-600' : 'bg-white text-gray-700 hover:bg-gray-50 border-gray-300'}">
+              ${page}
+            </button>
+          `).join('')}
+          <button onclick="changePage(${currentPage + 1})"
+            ${currentPage === totalPages ? 'disabled' : ''}
+            class="px-4 py-2 rounded-lg border text-sm font-medium ${currentPage === totalPages ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-white text-gray-700 hover:bg-gray-50 border-gray-300'}">
+            Next
+          </button>
+        </div>
+        ` : ''}
+      `;
+      lucide.createIcons();
+    }
+
+    function changePage(page) {
+      const totalPages = Math.ceil(allDonors.length / perPage);
+      if (page < 1 || page > totalPages) return;
+      currentPage = page;
+      renderDonors();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Load on start
+    fetchDonors();
+
+    // Live filter
+    document.getElementById('bloodGroup').addEventListener('change', fetchDonors);
+    document.getElementById('organ').addEventListener('change', fetchDonors);
+  </script>
+
+</body>
+</html>

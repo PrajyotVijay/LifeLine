@@ -5,7 +5,7 @@ A full-stack MERN application that connects blood and organ donors with recipien
 ## 🎥 Demo
 
 ### Watch Full Demo on YouTube
-[![LifeLine Demo](https://img.youtube.com/vi/ZLTriVRe-HY/0.jpg)](https://www.youtube.com/watch?v=ZLTriVRe-HY)
+[Coming soon....]
 
 ### Quick Preview
 ![LifeLine Demo](screenshots/demo.gif)

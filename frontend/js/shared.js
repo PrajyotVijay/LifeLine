@@ -1,4 +1,4 @@
-const API_BASE = 'http://localhost:5000/api';
+const API_BASE = 'https://lifeline-backend-sm5o.onrender.com/api';
 
 function renderNavbar(activePage = '', root = '../') {
   return `

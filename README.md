@@ -4,8 +4,7 @@ A full-stack MERN application that connects blood and organ donors with recipien
 
 ## 🎥 Demo
 
-### Watch Full Demo on YouTube
-[Coming soon....]
+🌐 **Live Demo:** [lifeline-chi-ten.vercel.app](https://lifeline-chi-ten.vercel.app)
 
 ### Quick Preview
 ![LifeLine Demo](screenshots/demo.gif)

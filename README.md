@@ -4,7 +4,7 @@
 
 A full-stack MERN application that bridges the gap between blood and organ donors and recipients across India. Built with real-world problem-solving at its core — not just a CRUD app, but a life-saving platform.
 
-🌐 **Live Demo:** [lifeline-chi-ten.vercel.app](https://lifeline-chi-ten.vercel.app) &nbsp;|&nbsp; 
+🌐 **Live Demo:** [lifeline-chi-ten.vercel.app](https://lifeline-chi-ten.vercel.app) &nbsp;
 
 ![LifeLine Demo](screenshots/demo.gif)
 
